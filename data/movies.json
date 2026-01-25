@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Matrix",
+    "action": 4,
+    "drama": 2,
+    "comedy": 1,
+    "scifi": 5
+  },
+  {
+    "title": "Titanic",
+    "action": 1,
+    "drama": 5,
+    "comedy": 1,
+    "scifi": 0
+  },
+  {
+    "title": "Vingadores",
+    "action": 5,
+    "drama": 2,
+    "comedy": 3,
+    "scifi": 4
+  }
+]

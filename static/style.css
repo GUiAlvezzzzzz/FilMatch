@@ -1,0 +1,194 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background: #f4f4f4;
+}
+
+header {
+    text-align: center;
+    padding: 30px;
+}
+
+.h1main {
+    font-size: 2rem;
+}
+
+.pmain {
+    opacity: 0.7;
+}
+
+/* FORM */
+.form {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+}
+
+.nome {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.ranges label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+/* BUTTONS */
+.buttons {
+    padding: 7px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+.User,
+.Rec {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.Rec {
+    background: #333;
+    color: white;
+}
+
+.Rec:hover {
+    background: #FF9800;
+}
+
+/* RESULTS */
+.results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(281px, 1fr));
+    gap: 20px;
+    padding: 30px;
+    justify-content: center;
+    justify-items: center;
+}
+
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+.movie-card {
+    background: white;
+    padding: 38px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.movie-card img {
+    width: 100%;
+    border-radius: 10px;
+    transition: transform 1.0s;
+}
+
+.movie-card img:hover {
+    transform: scale(1.1);
+}
+
+.actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.actions .like {
+    position: relative;
+    padding: 7px;
+    width: 40px;
+    height: 40px;
+
+    background-color: #333;
+    /* FUNDO DO BOTÃO */
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background-color 0.2s ease;
+}
+
+.actions .like::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+
+    background-color: white;
+    /* COR DO ÍCONE */
+
+    mask: url("hand-thumbs-up.svg") no-repeat center;
+    -webkit-mask: url("hand-thumbs-up.svg") no-repeat center;
+
+    mask-size: contain;
+    -webkit-mask-size: contain;
+}
+
+.actions .like:hover {
+    background-color: #2ecc71;
+    transform: 1.2s ease;
+}
+
+.actions .dislike {
+    position: relative;
+    padding: 7px;
+    width: 40px;
+    height: 40px;
+
+    background-color: #333;
+    /* FUNDO DO BOTÃO */
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background-color 0.2s ease;
+}
+
+.actions .dislike::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+
+    background-color: white;
+    /* COR DO ÍCONE */
+
+    mask: url("hand-thumbs-down.svg") no-repeat center;
+    -webkit-mask: url("hand-thumbs-down.svg") no-repeat center;
+
+    mask-size: contain;
+    -webkit-mask-size: contain;
+}
+
+.actions .dislike:hover {
+    background-color: red;
+    transform: 1.2s ease;
+}
+
+
+

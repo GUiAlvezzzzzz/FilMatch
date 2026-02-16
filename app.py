@@ -1,34 +1,51 @@
 from flask import Flask, request, jsonify, render_template, redirect, session
 import sqlite3
 import requests
+import os
 from database.db import create_tables, get_connection
 from models.recommender import recommend_movies
 
-TMDB_API_KEY = "b87c198c19ec168812af0faedcfa8129"
+TMDB_API_KEY = "SUA_CHAVE_AQUI"
 
 app = Flask(__name__)
 app.secret_key = "segredo_super_seguro"
 
-create_tables()
+# 🔥 IMPORTANTE PRA VERCEL
+DATABASE_PATH = "/tmp/database.db"
 
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
+# cria tabelas se não existir
+if not os.path.exists(DATABASE_PATH):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            age INTEGER,
+            email TEXT UNIQUE,
+            password TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
 
-# PÁGINA INICIAL (LOGIN)
 
 @app.route("/")
 def index():
     return render_template("login.html")
 
 
-
-# REGISTRO
-
 @app.route("/register", methods=["POST"])
 def register():
     data = request.json
 
     try:
-        conn = get_connection()
+        conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute("""
@@ -50,14 +67,11 @@ def register():
         return jsonify({"error": "Email já cadastrado"}), 400
 
 
-
-# LOGIN 
-
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
 
-    conn = get_connection()
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -71,13 +85,10 @@ def login():
     if not user:
         return jsonify({"error": "Credenciais inválidas"}), 401
 
-    session["user_id"] = user[0]
+    session["user_id"] = user["id"]
 
     return jsonify({"success": True})
 
-
-
-# RECOMENDADOR (PÁGINA)
 
 @app.route("/recomendador")
 def recomendador():
@@ -87,12 +98,8 @@ def recomendador():
     return render_template("index.html")
 
 
-
-# RECOMENDAÇÃO 
-
 @app.route("/recommend", methods=["POST"])
 def recommend():
-
 
     user_id = session.get("user_id")
 
@@ -109,9 +116,6 @@ def recommend():
     return jsonify(movies)
 
 
-
-# PLATAFORMAS
-
 @app.route("/providers/<int:movie_id>")
 def get_providers(movie_id):
 
@@ -125,19 +129,3 @@ def get_providers(movie_id):
     providers = data.get("results", {}).get("BR", {}).get("flatrate", [])
 
     return jsonify(providers)
-
-
-
-# LOGOUT (OPCIONAL)
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/")
-
-
-
-# RUN
-
-if __name__ == "__main__":
-    app.run(debug=True)

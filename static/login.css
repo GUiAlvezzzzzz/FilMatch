@@ -1,0 +1,131 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+/* 
+   BACKGROUND
+ */
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #141e30, #243b55);
+}
+
+/* 
+   LOGIN BOX
+ */
+
+.box {
+  width: 360px;
+  padding: 40px;
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+
+  animation: fadeIn 0.6s ease;
+}
+
+/* 
+   LOGO / TÍTULO
+*/
+
+.box h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+
+  background: linear-gradient(135deg, #ff4c29, #ff7a29);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 
+   INPUTS
+ */
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+
+  border: none;
+  border-radius: 12px;
+  outline: none;
+
+  font-size: 14px;
+  transition: 0.3s ease;
+}
+
+input:focus {
+  box-shadow: 0 0 0 2px #ff4c29;
+}
+
+/* 
+   BUTTONS
+*/
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+/* Botão cadastrar */
+button:first-of-type {
+  background: linear-gradient(135deg, #ff4c29, #ff7a29);
+  color: white;
+}
+
+/* Botão entrar */
+button:last-of-type {
+  background: #2ecc71;
+  color: white;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* 
+   MENSAGEM
+ */
+
+#msg {
+  margin-top: 15px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* 
+   ANIMAÇÃO
+ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

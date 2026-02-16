@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>FilMatch</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>FilMatch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="top-bar">
+      <button id="langToggle" class="lang-btn"></button>
+      <button id="themeToggle" class="theme-btn"></button>
+    </div>
 
-  <header id="header"></header>
+    <header id="header" class="main-header"></header>
 
-  <main id="app"></main>
+    <main id="app"></main>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
 </html>

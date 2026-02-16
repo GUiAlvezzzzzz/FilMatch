@@ -9,7 +9,7 @@ movies = []
 for page in range(1, 29):  
     response = requests.get(URL, params={
         "api_key": API_KEY,
-        "language": "en-US",
+        "language": "pt-BR",
         "page": page
     })
     data = response.json()

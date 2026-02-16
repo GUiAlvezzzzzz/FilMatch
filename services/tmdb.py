@@ -1,8 +1,6 @@
 import requests
-import random
 
 API_KEY = "b87c198c19ec168812af0faedcfa8129"
-BASE_URL = "https://api.themoviedb.org/3"
 
 GENRE_MAP = {
     "action": 28,
@@ -12,36 +10,32 @@ GENRE_MAP = {
 }
 
 
-def fetch_discover_movies(pages=6):
+def fetch_discover_movies(pages=5, language="pt-BR"):
     movies = []
-    random_pages = random.sample(range(1, 20), pages)
 
-    for page in random_pages:
-        response = requests.get(
-            f"{BASE_URL}/discover/movie",
+    for page in range(1, pages + 1):
+        res = requests.get(
+            "https://api.themoviedb.org/3/discover/movie",
             params={
                 "api_key": API_KEY,
-                "language": "pt-BR",
-                "sort_by": "popularity.desc",
-                "vote_count.gte": 100,
+                "language": language,
                 "page": page
             }
         )
 
-        if response.status_code != 200:
-            continue
+        data = res.json()
 
-        for movie in response.json().get("results", []):
-            if not movie.get("poster_path"):
-                continue
-
+        for movie in data.get("results", []):
             movies.append({
                 "id": movie["id"],
                 "title": movie["title"],
+                "overview": movie.get("overview"),
+                "release_date": movie.get("release_date"),
                 "genre_ids": movie["genre_ids"],
                 "vote_average": movie["vote_average"],
                 "popularity": movie["popularity"],
-                "poster": f"https://image.tmdb.org/t/p/w300{movie['poster_path']}"
+                "poster": f"https://image.tmdb.org/t/p/w500{movie['poster_path']}"
             })
+
 
     return movies

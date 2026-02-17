@@ -1,16 +1,24 @@
-from flask import Flask, request, jsonify, render_template, redirect, session
+import os
 import sqlite3
 import requests
-import os
-from database.db import create_tables, get_connection
-from models.recommender import recommend_movies
+from flask import Flask, request, jsonify, render_template, redirect, session
 
-TMDB_API_KEY = "SUA_CHAVE_AQUI"
+# CONFIGURAÇÃO BASE
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static")
+)
+
 app.secret_key = "segredo_super_seguro"
 
-# 🔥 IMPORTANTE PRA VERCEL
+TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
+
+# DATABASE (SERVERLESS SAFE)
+
 DATABASE_PATH = "/tmp/database.db"
 
 def get_db_connection():
@@ -18,10 +26,10 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-# cria tabelas se não existir
-if not os.path.exists(DATABASE_PATH):
+def create_tables():
     conn = get_db_connection()
     cursor = conn.cursor()
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,9 +39,13 @@ if not os.path.exists(DATABASE_PATH):
             password TEXT
         )
     """)
+
     conn.commit()
     conn.close()
 
+create_tables()
+
+# ROTAS
 
 @app.route("/")
 def index():
@@ -86,7 +98,6 @@ def login():
         return jsonify({"error": "Credenciais inválidas"}), 401
 
     session["user_id"] = user["id"]
-
     return jsonify({"success": True})
 
 
@@ -94,26 +105,29 @@ def login():
 def recomendador():
     if "user_id" not in session:
         return redirect("/")
-
     return render_template("index.html")
 
 
 @app.route("/recommend", methods=["POST"])
 def recommend():
-
     user_id = session.get("user_id")
 
     if not user_id:
         return jsonify({"error": "Não autenticado"}), 401
 
-    lang = request.args.get("lang", "pt")
     profile = request.json
-
+    lang = request.args.get("lang", "pt")
     tmdb_language = "pt-BR" if lang == "pt" else "en-US"
 
-    movies = recommend_movies(profile, language=tmdb_language)
+    url = "https://api.themoviedb.org/3/discover/movie"
 
-    return jsonify(movies)
+    response = requests.get(url, params={
+        "api_key": TMDB_API_KEY,
+        "language": tmdb_language,
+        "sort_by": "popularity.desc"
+    })
+
+    return jsonify(response.json())
 
 
 @app.route("/providers/<int:movie_id>")

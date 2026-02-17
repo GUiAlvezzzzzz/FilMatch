@@ -3,18 +3,25 @@ import sqlite3
 import requests
 from database.db import create_tables, get_connection
 from models.recommender import recommend_movies
-import os
+
+TMDB_API_KEY = "b87c198c19ec168812af0faedcfa8129"
 
 app = Flask(__name__)
-app.secret_key = "segredo"
-
-TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
+app.secret_key = "segredo_super_seguro"
 
 create_tables()
+
+
+
+# PÁGINA INICIAL (LOGIN)
 
 @app.route("/")
 def index():
     return render_template("login.html")
+
+
+
+# REGISTRO
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -42,6 +49,10 @@ def register():
     except sqlite3.IntegrityError:
         return jsonify({"error": "Email já cadastrado"}), 400
 
+
+
+# LOGIN 
+
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
@@ -49,10 +60,10 @@ def login():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT id FROM users WHERE email=? AND password=?",
-        (data["email"], data["password"])
-    )
+    cursor.execute("""
+        SELECT id FROM users
+        WHERE email = ? AND password = ?
+    """, (data["email"], data["password"]))
 
     user = cursor.fetchone()
     conn.close()
@@ -61,26 +72,49 @@ def login():
         return jsonify({"error": "Credenciais inválidas"}), 401
 
     session["user_id"] = user[0]
-    return jsonify({"success": True, "user_id": user[0]})
+
+    return jsonify({"success": True})
+
+
+
+# RECOMENDADOR (PÁGINA)
 
 @app.route("/recomendador")
 def recomendador():
     if "user_id" not in session:
         return redirect("/")
+
     return render_template("index.html")
 
-@app.route("/recommend/<int:user_id>", methods=["POST"])
-def recommend(user_id):
+
+
+# RECOMENDAÇÃO 
+
+@app.route("/recommend", methods=["POST"])
+def recommend():
+
+
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+
     lang = request.args.get("lang", "pt")
     profile = request.json
 
     tmdb_language = "pt-BR" if lang == "pt" else "en-US"
+
     movies = recommend_movies(profile, language=tmdb_language)
 
     return jsonify(movies)
 
+
+
+# PLATAFORMAS
+
 @app.route("/providers/<int:movie_id>")
 def get_providers(movie_id):
+
     url = f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers"
 
     response = requests.get(url, params={
@@ -91,3 +125,19 @@ def get_providers(movie_id):
     providers = data.get("results", {}).get("BR", {}).get("flatrate", [])
 
     return jsonify(providers)
+
+
+
+# LOGOUT (OPCIONAL)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+
+
+# RUN
+
+if __name__ == "__main__":
+    app.run(debug=True)
